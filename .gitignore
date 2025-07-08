@@ -1,0 +1,32 @@
+# Logs
+*.log
+npm-debug.log*
+# Explanation: Logs from npm or yarn commands that capture errors and debug info — safe to ignore.
+
+# Modules
+node_modules/
+# Explanation: Contains all your installed dependencies. Never commit to keep repo size small and avoid platform-specific binaries.
+
+# Config 
+.env
+# Explanation: Contains env variables that shouldn't risk exposure.
+
+# TypeScript build output
+dist/
+build/
+out/
+# Explanation: These folders usually contain compiled JavaScript files generated from your TypeScript source. You want to ignore them because they can be rebuilt anytime.
+
+# Jest coverage reports
+coverage/
+# Explanation: Test coverage output created by Jest. Not source code, so not committed.
+
+# MacOS system files
+.DS_Store
+Thumbs.db
+# Explanation: Hidden Mac system file storing folder view preferences; irrelevant for your project, same with Windows image caching.
+
+
+# npm cache
+.npm
+# Explanation: Incase .npm files are cached within the repo and not /.npm.

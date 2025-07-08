@@ -1,4 +1,1 @@
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "hellow world"
-# npm test
+npm test

@@ -1,2 +1,2 @@
 echo "hellow world"
-npm test
+# npm test

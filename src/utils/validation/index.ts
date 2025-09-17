@@ -9,6 +9,7 @@ const schemaValidation = <T extends zod.ZodTypeAny>(
   const parseResult = schema.safeParse(body);
 
   if (!parseResult.success) {
+    // Extract invalid paths to pass through
     throw new InvalidRequestBody("Invalid request body");
   }
   return parseResult.data as zod.infer<typeof schema>;

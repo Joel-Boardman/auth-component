@@ -2,6 +2,10 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 
 type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
 
+/**
+ * TODO
+ * - Add more Params to make it more dynamic. Eg dynamic body, path, params etc
+ */
 const generateApiGatewayEvent = (
   httpMethod: HttpMethod
 ): APIGatewayProxyEvent => {

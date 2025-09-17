@@ -17,6 +17,11 @@ const handler = async (
   try {
     const body = schemaValidation(event, requestBodySchema);
 
+    /**
+     * SDK Cognito call
+     * -- Goes here --
+     */
+
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },

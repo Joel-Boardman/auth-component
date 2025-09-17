@@ -1,6 +1,7 @@
 import type { Config } from "jest";
 
 const config: Config = {
+  roots: ["<rootDir>"],
   testEnvironment: "node",
   coverageThreshold: {
     global: {
@@ -16,16 +17,19 @@ const config: Config = {
       clearMocks: true,
       resetMocks: true,
       displayName: {
-        name: "unit",
-        color: "blue",
+        name: "Lambdas",
+        color: "yellow",
       },
-      testMatch: ["<root>/**/*.test.ts"],
+      testMatch: ["<rootDir>/src/lambdas/**/*.test.ts"],
       coveragePathIgnorePatterns: [
-        "<root>/node_modules",
-        "<root>/openapi",
-        "<root>/cdk",
-        "<root>/src/utils",
+        "<rootDir>/node_modules",
+        "<rootDir>/openapi",
+        "<rootDir>/cdk",
+        "<rootDir>/src/utils",
       ],
     },
   ],
+  transformIgnorePatterns: ["node_modules/"],
 };
+
+export default config;

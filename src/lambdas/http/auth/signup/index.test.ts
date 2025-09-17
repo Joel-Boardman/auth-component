@@ -1,10 +1,9 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
 import userSignup from "./index";
 import generateApiGatewayEvent from "../../../../../testing-tools/generateApiGatewayEvent";
 
 describe("userSignup", () => {
   describe("WHEN the request has an invalid body", () => {
-    it("SHOULD return a 400 Bad Request Error", async () => {
+    it("SHOULD return a 400 Invalid Request Error", async () => {
       const event = generateApiGatewayEvent("POST");
 
       const res = await userSignup(event);
@@ -16,7 +15,13 @@ describe("userSignup", () => {
     });
   });
 
-  describe("WHEN the request has a valid body", () => {
-    it.todo("WHEN the request has a ");
+  describe("WHEN the Cognito SDK is called", () => {
+    describe("AND it returns an error", () => {
+      it("SHOULD return a 500 Internal Server Error", () => {});
+    });
+
+    describe("AND it returns a success", () => {
+      it("SHOULD return a 201 success response", () => {});
+    });
   });
 });

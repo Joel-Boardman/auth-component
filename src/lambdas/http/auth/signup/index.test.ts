@@ -1,3 +1,5 @@
+import userSignup from "./index";
+
 describe("userSignup", () => {
   describe("WHEN the request has an invalid body", () => {
     it("SHOULD return a 400 Bad Request Error", () => {});

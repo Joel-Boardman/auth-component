@@ -9,3 +9,5 @@ const handler = async (
     body: JSON.stringify({ hello: "world" }),
   };
 };
+
+export default handler;

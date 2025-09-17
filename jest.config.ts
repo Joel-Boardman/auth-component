@@ -1,6 +1,4 @@
-import type { Config } from "jest";
-
-const config: Config = {
+module.exports = {
   roots: ["<rootDir>"],
   testEnvironment: "node",
   coverageThreshold: {
@@ -26,10 +24,29 @@ const config: Config = {
         "<rootDir>/openapi",
         "<rootDir>/cdk",
         "<rootDir>/src/utils",
+        "<rootDir>/src/services",
       ],
+    },
+    {
+      preset: "ts-jest",
+      clearMocks: true,
+      resetMocks: true,
+      displayName: {
+        name: "Utilities",
+        color: "green",
+      },
+      testMatch: ["<rootDir>/src/utils/**/*.test.ts"],
+    },
+    {
+      preset: "ts-jest",
+      clearMocks: true,
+      resetMocks: true,
+      displayName: {
+        name: "Services",
+        color: "blue",
+      },
+      testMatch: ["<rootDir>/src/services/**/*.test.ts"],
     },
   ],
   transformIgnorePatterns: ["node_modules/"],
 };
-
-export default config;

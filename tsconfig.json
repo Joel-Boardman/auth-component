@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2020",
     "lib": ["ES2020"],
-    "module": "commonjs",
+    "module": "node16",
     "resolveJsonModule": true,
     "checkJs": true,
     "allowSyntheticDefaultImports": true,

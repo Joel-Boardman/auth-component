@@ -24,7 +24,6 @@ export const cognitoCreateUser = async (
 
     return response.UserConfirmed;
   } catch (err) {
-    // throw responsible error, need to check the SDK error specifics
     throw Error();
   }
 };

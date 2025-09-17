@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { InvalidRequestBody } from "../../../../utils/errors";
 import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
+import { cognitoCreateUser } from "../../../../services/cognito";
 
 /**
  * TODO
@@ -17,10 +18,7 @@ const handler = async (
   try {
     const body = schemaValidation(event, requestBodySchema);
 
-    /**
-     * SDK Cognito call
-     * -- Goes here --
-     */
+    await cognitoCreateUser(body);
 
     return {
       statusCode: 200,

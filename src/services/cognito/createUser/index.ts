@@ -5,9 +5,11 @@ import {
 import { cognitoIdentityClient } from "../";
 import { fetchEnvVariableOrThrow } from "../../../utils/envVariables";
 import { EnvVariables } from "../../../utils/envVariables";
+import { SignUpInput } from "../../../lambdas/http/auth/signup/index.schema";
+import { CognitoSignUpParams } from "./index.types";
 
 export const cognitoCreateUser = async (
-  body: Record<string, any>
+  body: CognitoSignUpParams
 ): Promise<boolean | Error> => {
   const clientId = fetchEnvVariableOrThrow(EnvVariables.COGNITO_CLIENT_ID);
 

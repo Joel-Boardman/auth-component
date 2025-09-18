@@ -1,8 +1,10 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { InvalidRequestBody } from "../../../../utils/errors";
+
 import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
 import { cognitoCreateUser } from "../../../../services/cognito";
+import { InvalidRequestBody } from "../../../../utils/errors";
+import { CognitoUserSignUpInput } from "../../../../services/cognito/createUser/index.types";
 
 /**
  * TODO
@@ -18,7 +20,25 @@ const handler = async (
   try {
     const body = schemaValidation(event, requestBodySchema);
 
-    await cognitoCreateUser(body);
+    const input: CognitoUserSignUpInput = {
+      ClientId: "",
+      Username: body.email,
+      Password: body.password,
+      UserAttributes: [
+        ...(body?.firstName
+          ? [{ Name: "given_name" as const, Value: body.firstName }]
+          : []),
+        ...(body?.lastName
+          ? [{ Name: "family_name" as const, Value: body.lastName }]
+          : []),
+        ...(body?.phoneNumber
+          ? [{ Name: "phone_number" as const, Value: body.phoneNumber }]
+          : []),
+        { Name: "preferred_username" as const, Value: body.username },
+      ],
+    };
+
+    await cognitoCreateUser(input);
 
     return {
       statusCode: 200,

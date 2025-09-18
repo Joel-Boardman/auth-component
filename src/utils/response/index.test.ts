@@ -1,3 +1,3 @@
 describe("generateApiGatewayResponse", () => {
-  it.todo("DO SOMETHING");
+  it.todo("DO SOMETHIN");
 });

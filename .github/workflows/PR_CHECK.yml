@@ -1,10 +1,23 @@
 name: Tests before branch merging
 
 on:
+  push:
+    branches: ["main", "staging", "dev"]
   pull_request:
     types: [opened, reopened, synchronize]
 
 jobs:
   run-tests:
-    name: Run Jest Testing
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v
+
+      - name: Node setup
+        uses: actions/setup-node@v3,
+        with:
+          node-version: 18.x
+
+      - name: Run testing
+        run: npm run test

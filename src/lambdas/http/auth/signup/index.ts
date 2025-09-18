@@ -10,14 +10,6 @@ import {
   fetchEnvVariableOrThrow,
 } from "../../../../utils/envVariables";
 
-/**
- * TODO
- * - Move return results to a reusable function.
- * - Handle errors for bad request body, internal server errors, and SDK errors.
- * - Standardise error handling.
- *
- */
-
 const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {

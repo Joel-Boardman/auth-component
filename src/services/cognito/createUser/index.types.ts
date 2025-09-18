@@ -10,7 +10,7 @@ interface ValidUserAttributeNames {
   phone_number?: string;
 }
 
-interface BaseUserAttributesInput<K extends string = string> {
+interface BaseUserAttributesInput<K> {
   Name: K;
   Value: string;
 }

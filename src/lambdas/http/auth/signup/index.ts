@@ -5,6 +5,10 @@ import { requestBodySchema } from "./index.schema";
 import { cognitoCreateUser } from "../../../../services/cognito";
 import { InvalidRequestBody } from "../../../../utils/errors";
 import { CognitoUserSignUpInput } from "../../../../services/cognito/createUser/index.types";
+import {
+  EnvVariables,
+  fetchEnvVariableOrThrow,
+} from "../../../../utils/envVariables";
 
 /**
  * TODO
@@ -21,20 +25,16 @@ const handler = async (
     const body = schemaValidation(event, requestBodySchema);
 
     const input: CognitoUserSignUpInput = {
-      ClientId: "",
+      ClientId: fetchEnvVariableOrThrow(EnvVariables.COGNITO_CLIENT_ID),
       Username: body.email,
       Password: body.password,
       UserAttributes: [
-        ...(body?.firstName
-          ? [{ Name: "given_name" as const, Value: body.firstName }]
-          : []),
-        ...(body?.lastName
-          ? [{ Name: "family_name" as const, Value: body.lastName }]
-          : []),
+        { Name: "given_name", Value: body.firstName },
+        { Name: "family_name", Value: body.lastName },
+        { Name: "preferred_username", Value: body.username },
         ...(body?.phoneNumber
           ? [{ Name: "phone_number" as const, Value: body.phoneNumber }]
           : []),
-        { Name: "preferred_username" as const, Value: body.username },
       ],
     };
 

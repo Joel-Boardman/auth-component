@@ -1,4 +1,7 @@
-import { SignUpRequest } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  SignUpRequest,
+  AttributeType,
+} from "@aws-sdk/client-cognito-identity-provider";
 
 interface ValidUserAttributeNames {
   given_name: string;
@@ -7,19 +10,22 @@ interface ValidUserAttributeNames {
   phone_number?: string;
 }
 
-type BaseUserAttributesInput<T> = {
-  [K in keyof T]: {
-    Name: Extract<K, string>;
-    Value: string;
-  };
-}[keyof T];
+interface BaseUserAttributesInput<K extends string = string> {
+  Name: K;
+  Value: string;
+}
+
+type UserSignupAttributes = BaseUserAttributesInput<
+  keyof ValidUserAttributeNames
+>[];
 
 export interface BaseCognitoSignUp<T> extends SignUpRequest {
   ClientId: string;
   Username: string;
   Password: string;
-  UserAttributes: BaseUserAttributesInput<T>[];
+  UserAttributes: T extends AttributeType[] ? T : [];
 }
 
-export type CognitoUserSignUpInput = BaseCognitoSignUp<ValidUserAttributeNames>;
-export type CognitoSignUpParams = CognitoUserSignUpInput; // possible union type later.
+export type CognitoUserSignUpInput = BaseCognitoSignUp<UserSignupAttributes>;
+
+export type CognitoSignUpParams = BaseCognitoSignUp<ValidUserAttributeNames>;

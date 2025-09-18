@@ -14,8 +14,8 @@ export const requestBodySchema = zod.object({
     .string()
     .min(8)
     .regex(/[^A-Za-z0-9]/),
-  firstName: zod.string().min(2).optional(),
-  lastName: zod.string().min(2).optional(),
+  firstName: zod.string().min(2),
+  lastName: zod.string().min(2),
   username: zod.string().min(3),
   phoneNumber: zod.string().optional(),
 });

@@ -1,10 +1,15 @@
+enum ErrorTypes {
+  "InvalidRequestBody",
+  "InternalServerError",
+}
+
 export class InvalidRequestBody extends Error {
   status: number;
-  path: string[];
+  path?: string[];
 
-  constructor(message: string, path: string[]) {
+  constructor(message: string, path?: string[]) {
     super(message);
-    this.path = path;
+    this.path = path || [];
     this.status = 400;
   }
 }

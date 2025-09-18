@@ -6,13 +6,12 @@ const schemaValidation = <T extends zod.ZodTypeAny>(
   schema: T
 ): zod.infer<typeof schema> => {
   const body = JSON.parse(event.body);
-  const parseResult = schema.safeParse(body);
+  const parsedResult = schema.safeParse(body);
 
-  if (!parseResult.success) {
-    console.log("eeror", parseResult, body);
+  if (!parsedResult.success) {
     throw new InvalidRequestBody("Invalid request body");
   }
-  return parseResult.data as zod.infer<typeof schema>;
+  return parsedResult.data as zod.infer<typeof schema>;
 };
 
 export { schemaValidation };

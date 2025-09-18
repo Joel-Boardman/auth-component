@@ -9,12 +9,13 @@ import {
   EnvVariables,
   fetchEnvVariableOrThrow,
 } from "../../../../utils/envVariables";
+import generateApiGatewayResponse from "../../../../utils/response";
 
 const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
-    const body = schemaValidation(event, requestBodySchema);
+    const body = await schemaValidation(event, requestBodySchema);
 
     const input: CognitoUserSignUpInput = {
       ClientId: fetchEnvVariableOrThrow(EnvVariables.COGNITO_CLIENT_ID),
@@ -24,35 +25,36 @@ const handler = async (
         { Name: "given_name", Value: body.firstName },
         { Name: "family_name", Value: body.lastName },
         { Name: "preferred_username", Value: body.username },
-        ...(body?.phoneNumber
+        ...(body.phoneNumber
           ? [{ Name: "phone_number" as const, Value: body.phoneNumber }]
           : []),
       ],
     };
 
-    await cognitoCreateUser(input);
+    const userSub = await cognitoCreateUser(input);
 
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ hello: "world" }),
-    };
+    return generateApiGatewayResponse({
+      statusCode: 201,
+      body: {
+        userId: userSub,
+      },
+    });
   } catch (err: unknown) {
     if (err instanceof InvalidRequestBody) {
-      return {
-        statusCode: err.status,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      return generateApiGatewayResponse({
+        statusCode: 401,
+        body: {
           message: err.message,
-        }),
-      };
+        },
+      });
     }
 
-    return {
+    return generateApiGatewayResponse({
       statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: "",
-    };
+      body: {
+        message: "Internal Server Error",
+      },
+    });
   }
 };
 

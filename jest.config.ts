@@ -1,6 +1,9 @@
 module.exports = {
   roots: ["<rootDir>"],
   testEnvironment: "node",
+  compilerOptions: {
+    isolatedModules: true,
+  },
   coverageThreshold: {
     global: {
       branches: 100,

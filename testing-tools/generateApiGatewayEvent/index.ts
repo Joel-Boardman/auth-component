@@ -7,15 +7,17 @@ type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
  * - Add more Params to make it more dynamic. Eg dynamic body, path, params etc
  */
 const generateApiGatewayEvent = (
-  httpMethod: HttpMethod
+  httpMethod: HttpMethod,
+  path: string,
+  body: Record<string, any> = {}
 ): APIGatewayProxyEvent => {
   return {
-    body: JSON.stringify({ hello: "world" }),
+    body: JSON.stringify(body),
     headers: {},
     multiValueHeaders: {},
     httpMethod: httpMethod,
     isBase64Encoded: false,
-    path: "/",
+    path,
     pathParameters: {},
     queryStringParameters: {},
     multiValueQueryStringParameters: {},

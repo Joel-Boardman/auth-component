@@ -6,8 +6,9 @@ export enum EnvVariables {
 export const fetchEnvVariableOrThrow = (envVar: EnvVariables) => {
   const variable = process.env[envVar];
 
-  if (!variable)
+  if (!variable) {
+    console.log("Hello");
     throw new Error("Missing required environment variable: " + envVar);
-
+  }
   return variable;
 };

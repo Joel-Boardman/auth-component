@@ -16,7 +16,7 @@ const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const body = await schemaValidation(event, requestBodySchema);
-
+    //
     const input: CognitoUserSignUpInput = {
       ClientId: fetchEnvVariableOrThrow(EnvVariables.COGNITO_CLIENT_ID),
       Username: body.email,

@@ -42,7 +42,7 @@ const handler = async (
   } catch (err: unknown) {
     if (err instanceof InvalidRequestBody) {
       return generateApiGatewayResponse({
-        statusCode: 401,
+        statusCode: 400,
         body: {
           message: err.message,
         },

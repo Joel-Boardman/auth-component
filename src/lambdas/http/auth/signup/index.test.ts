@@ -36,7 +36,7 @@ describe("userSignup", () => {
 
       const res = await userSignup(event);
 
-      expect(res.statusCode).toBe(401);
+      expect(res.statusCode).toBe(400);
       expect(res.body).toContain(
         JSON.stringify({ message: "Invalid request body" })
       );

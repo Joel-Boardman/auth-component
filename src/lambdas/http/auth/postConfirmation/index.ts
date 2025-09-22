@@ -1,11 +1,14 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import generateApiGatewayResponse from "../../../../utils/response";
+import { schemaValidation } from "../../../../utils/validation";
+import { requestBodySchema } from "./index.schema";
+import { InvalidRequestBody } from "../../../../utils/errors";
 
-const handler = (
+const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
-    // Validate payload
+    const body = await schemaValidation(event, requestBodySchema);
 
     // Check for confirmation
 
@@ -17,7 +20,21 @@ const handler = (
 
     return generateApiGatewayResponse({ statusCode: 200 });
   } catch (err: unknown) {
-    return generateApiGatewayResponse({ statusCode: 500 });
+    if (err instanceof InvalidRequestBody) {
+      return generateApiGatewayResponse({
+        statusCode: 400,
+        body: {
+          message: err.message,
+        },
+      });
+    }
+
+    return generateApiGatewayResponse({
+      statusCode: 500,
+      body: {
+        message: "Internal Server Error",
+      },
+    });
   }
 };
 

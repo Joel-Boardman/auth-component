@@ -19,17 +19,19 @@ describe("userSignup", () => {
 
   afterEach(() => jest.clearAllMocks());
   const validBody = {
-    email: "dennis@email.com",
-    password: "Password1!",
-    firstName: "Dennis",
-    lastName: "Reynolds",
-    username: "Golden_God",
+    body: {
+      email: "dennis@email.com",
+      password: "Password1!",
+      firstName: "Dennis",
+      lastName: "Reynolds",
+      username: "Golden_God",
+    },
   };
 
   describe("WHEN the request has an invalid body", () => {
     it("SHOULD return a 400 Invalid Request Error", async () => {
       const event = generateApiGatewayEvent("POST", "/signup", {
-        invalid: "data",
+        body: { invalid: "data" },
       });
 
       const res = await userSignup(event);
@@ -103,12 +105,12 @@ describe("userSignup", () => {
         expect(mockedCreateUser).toHaveBeenCalledTimes(1);
         expect(mockedCreateUser).toHaveBeenCalledWith({
           ClientId: "client-id",
-          Username: validBody.email,
-          Password: validBody.password,
+          Username: validBody.body.email,
+          Password: validBody.body.password,
           UserAttributes: [
-            { Name: "given_name", Value: validBody.firstName },
-            { Name: "family_name", Value: validBody.lastName },
-            { Name: "preferred_username", Value: validBody.username },
+            { Name: "given_name", Value: validBody.body.firstName },
+            { Name: "family_name", Value: validBody.body.lastName },
+            { Name: "preferred_username", Value: validBody.body.username },
           ],
         });
 

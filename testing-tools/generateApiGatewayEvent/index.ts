@@ -9,16 +9,16 @@ type HttpMethod = "GET" | "POST" | "DELETE" | "PUT";
 const generateApiGatewayEvent = (
   httpMethod: HttpMethod,
   path: string,
-  body: Record<string, any> = {}
+  config: Record<string, any> = {}
 ): APIGatewayProxyEvent => {
   return {
-    body: JSON.stringify(body),
-    headers: {},
+    body: config.body ? JSON.stringify(config.body) : "",
+    headers: config.headers || {},
     multiValueHeaders: {},
     httpMethod: httpMethod,
     isBase64Encoded: false,
     path,
-    pathParameters: {},
+    pathParameters: config.pathParameters || {},
     queryStringParameters: {},
     multiValueQueryStringParameters: {},
     stageVariables: {},

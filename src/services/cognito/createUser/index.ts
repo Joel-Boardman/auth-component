@@ -17,7 +17,7 @@ export const cognitoCreateUser = async (
 
     return response.UserSub;
   } catch (err: any) {
-    console.log("services::cognito::createUser", {
+    console.log("services::cognito::cognitoCreateUser", {
       name: err?.name,
       message: err?.message,
       statusCode: err?.$metadata?.httpStatusCode,

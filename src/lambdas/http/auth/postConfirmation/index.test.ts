@@ -8,6 +8,8 @@ jest.mock("../../../../services/cognito");
 const mockCognitoAdminGetUser = cognitoAdminGetUser as jest.Mock;
 
 describe("PostConfirmation", () => {
+  afterEach(() => jest.clearAllMocks());
+
   describe("WHEN the Request payload is invalid", () => {
     it("SHOULD return a 400 Invalid Request Error", async () => {
       const event = generateApiGatewayEvent("POST", "/post-confirmation", {
@@ -37,6 +39,7 @@ describe("PostConfirmation", () => {
             userId: "aaaaa-bbbbb-ccccc-ddddd-eeeee-ffffff",
           },
         });
+
         const res = await postConfirmation(event);
 
         expect(res.statusCode).toBe(500);

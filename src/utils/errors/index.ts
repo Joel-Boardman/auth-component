@@ -3,6 +3,14 @@ enum ErrorTypes {
   "InternalServerError",
 }
 
+export class ResourceNotFound extends Error {
+  status: number;
+  constructor(message: string) {
+    super(message);
+    this.status = 404;
+  }
+}
+
 export class InvalidRequestBody extends Error {
   status: number;
   path?: string[];

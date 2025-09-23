@@ -3,6 +3,7 @@ import generateApiGatewayResponse from "../../../../utils/response";
 import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
 import { InvalidRequestBody } from "../../../../utils/errors";
+import { cognitoAdminGetUser } from "../../../../services/cognito";
 
 const handler = async (
   event: APIGatewayProxyEvent
@@ -11,6 +12,7 @@ const handler = async (
     const body = await schemaValidation(event, requestBodySchema);
 
     // Check for confirmation
+    const cognitoUser = await cognitoAdminGetUser(body.userId);
 
     // send confirmation
 
@@ -32,7 +34,7 @@ const handler = async (
     return generateApiGatewayResponse({
       statusCode: 500,
       body: {
-        message: "Internal Server Error",
+        message: "Internal server error",
       },
     });
   }

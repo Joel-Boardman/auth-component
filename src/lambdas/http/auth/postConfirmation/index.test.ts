@@ -1,7 +1,10 @@
 import generateApiGatewayEvent from "../../../../../testing-tools/generateApiGatewayEvent";
 import postConfirmation from "./";
 import { cognitoAdminGetUser } from "../../../../services/cognito";
-import { InternalServerError } from "../../../../utils/errors";
+import {
+  InternalServerError,
+  ResourceNotFound,
+} from "../../../../utils/errors";
 
 jest.mock("../../../../services/cognito");
 
@@ -50,7 +53,22 @@ describe("PostConfirmation", () => {
     });
 
     describe("AND it throws a UserNotFoundException error", () => {
-      it("SHOULD throw a 404 error with proper error message", () => {});
+      it("SHOULD throw a 404 error with proper error message", async () => {
+        mockCognitoAdminGetUser.mockRejectedValue(
+          new ResourceNotFound("User not found")
+        );
+
+        const event = generateApiGatewayEvent("POST", "/post-confirmation", {
+          body: {
+            userId: "aaaaa-bbbbb-ccccc-ddddd-eeeee-ffffff",
+          },
+        });
+
+        const res = await postConfirmation(event);
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toBe(JSON.stringify({ message: "User not found" }));
+      });
     });
   });
 });

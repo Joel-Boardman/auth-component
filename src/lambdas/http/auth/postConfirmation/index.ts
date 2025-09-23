@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import generateApiGatewayResponse from "../../../../utils/response";
 import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
-import { InvalidRequestBody } from "../../../../utils/errors";
+import { InvalidRequestBody, ResourceNotFound } from "../../../../utils/errors";
 import { cognitoAdminGetUser } from "../../../../services/cognito";
 
 const handler = async (
@@ -11,7 +11,6 @@ const handler = async (
   try {
     const body = await schemaValidation(event, requestBodySchema);
 
-    // Check for confirmation
     const cognitoUser = await cognitoAdminGetUser(body.userId);
 
     // send confirmation
@@ -25,6 +24,15 @@ const handler = async (
     if (err instanceof InvalidRequestBody) {
       return generateApiGatewayResponse({
         statusCode: 400,
+        body: {
+          message: err.message,
+        },
+      });
+    }
+
+    if (err instanceof ResourceNotFound) {
+      return generateApiGatewayResponse({
+        statusCode: 404,
         body: {
           message: err.message,
         },

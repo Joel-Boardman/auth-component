@@ -28,7 +28,7 @@ describe("PostConfirmation", () => {
   });
 
   describe("WHEN Cognito is called to check for verification", () => {
-    describe("AND the SDK call fails", () => {
+    describe("AND it throws a standard error", () => {
       it("SHOULD return a 500 Internal Server Error", async () => {
         mockCognitoAdminGetUser.mockRejectedValue(
           new InternalServerError("Internal server error")
@@ -47,6 +47,10 @@ describe("PostConfirmation", () => {
           JSON.stringify({ message: "Internal server error" })
         );
       });
+    });
+
+    describe("AND it throws a UserNotFoundException error", () => {
+      it("SHOULD throw a 404 error with proper error message", () => {});
     });
   });
 });

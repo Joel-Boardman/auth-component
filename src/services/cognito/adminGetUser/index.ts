@@ -1,8 +1,13 @@
-import { AdminGetUserCommand } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  AdminGetUserCommand,
+  AdminGetUserResponse,
+} from "@aws-sdk/client-cognito-identity-provider";
 import { cognitoIdentityClient } from "..";
 import { InternalServerError, ResourceNotFound } from "../../../utils/errors";
 
-export const cognitoAdminGetUser = async (input: any) => {
+export const cognitoAdminGetUser = async (
+  input: any
+): Promise<AdminGetUserResponse> => {
   try {
     const command = new AdminGetUserCommand(input);
     const response = await cognitoIdentityClient.send(command);

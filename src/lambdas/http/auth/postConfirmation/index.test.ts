@@ -32,7 +32,7 @@ describe("PostConfirmation", () => {
 
   describe("WHEN Cognito is called to check for verification", () => {
     describe("AND it throws a standard error", () => {
-      it("SHOULD return a 500 Internal Server Error", async () => {
+      it("SHOULD throw a 500 Internal Server Error", async () => {
         mockCognitoAdminGetUser.mockRejectedValue(
           new InternalServerError("Internal server error")
         );
@@ -69,6 +69,16 @@ describe("PostConfirmation", () => {
         expect(res.statusCode).toBe(404);
         expect(res.body).toBe(JSON.stringify({ message: "User not found" }));
       });
+    });
+  });
+
+  describe("WHEN Cognito is called to verify Users email", () => {
+    describe("AND it throws a standard error", () => {
+      it.todo("SHOULD return 500 Internal server error");
+    });
+
+    describe("AND it throws a TooManyFailedAttemptsException error", () => {
+      it.todo("SHOULD throw a 410 error with proper error message");
     });
   });
 });

@@ -62,7 +62,7 @@ describe("userSignup", () => {
     });
 
     describe("AND it throws a InvalidPasswordException error", () => {
-      it("SHOULD return a 401 error with proper error message", async () => {
+      it("SHOULD return a 400 error with proper error message", async () => {
         mockedCreateUser.mockRejectedValue(
           new InvalidRequestBody("Invalid Password")
         );
@@ -71,7 +71,7 @@ describe("userSignup", () => {
 
         const res = await userSignup(event);
 
-        expect(res.statusCode).toBe(401);
+        expect(res.statusCode).toBe(400);
         expect(res.body).toContain(
           JSON.stringify({ message: "Invalid Password" })
         );
@@ -79,7 +79,7 @@ describe("userSignup", () => {
     });
 
     describe("AND it throws a UsernameExistsException error", () => {
-      it("SHOULD return a 401 error with proper error message", async () => {
+      it("SHOULD return a 400 error with proper error message", async () => {
         mockedCreateUser.mockRejectedValue(
           new InvalidRequestBody("Email already in use")
         );
@@ -88,7 +88,7 @@ describe("userSignup", () => {
 
         const res = await userSignup(event);
 
-        expect(res.statusCode).toBe(401);
+        expect(res.statusCode).toBe(400);
         expect(res.body).toContain(
           JSON.stringify({ message: "Email already in use" })
         );

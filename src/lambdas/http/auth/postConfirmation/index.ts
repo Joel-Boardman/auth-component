@@ -30,8 +30,6 @@ const handler = async (
 
     const cognitoUser = await cognitoAdminGetUser(input);
 
-    console.log("HOLA", cognitoUser);
-
     const userVerified = cognitoUser.UserAttributes?.find(
       (obj) => obj.Name === "email_verified"
     );
@@ -48,7 +46,6 @@ const handler = async (
 
     return generateApiGatewayResponse({ statusCode: 200 });
   } catch (err: unknown) {
-    console.log(err);
     if (err instanceof InvalidRequestBody) {
       return generateApiGatewayResponse({
         statusCode: 400,

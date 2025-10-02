@@ -7,7 +7,6 @@ export const fetchEnvVariableOrThrow = (envVar: EnvVariables) => {
   const variable = process.env[envVar];
 
   if (!variable) {
-    console.log("Hello");
     throw new Error("Missing required environment variable: " + envVar);
   }
   return variable;

@@ -8,6 +8,7 @@ import {
   EnvVariables,
   fetchEnvVariableOrThrow,
 } from "../../../../utils/envVariables";
+import { CognitoAdminGetUserInput } from "../../../../services/cognito/adminGetUser/index.types";
 
 const handler = async (
   event: APIGatewayProxyEvent
@@ -15,10 +16,12 @@ const handler = async (
   try {
     const body = await schemaValidation(event, requestBodySchema);
 
-    const cognitoUser = await cognitoAdminGetUser({
+    const input: CognitoAdminGetUserInput = {
       UserPoolId: fetchEnvVariableOrThrow(EnvVariables.USER_POOL_ID),
       Username: body.email,
-    });
+    };
+
+    const cognitoUser = await cognitoAdminGetUser(input);
 
     const userVerified = cognitoUser.UserAttributes?.find(
       (obj) => obj.Name === "email_verified"

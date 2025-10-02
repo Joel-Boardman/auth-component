@@ -4,9 +4,10 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { cognitoIdentityClient } from "..";
 import { InternalServerError, ResourceNotFound } from "../../../utils/errors";
+import { CognitoAdminGetUserParams } from "./index.types";
 
 export const cognitoAdminGetUser = async (
-  input: any
+  input: CognitoAdminGetUserParams
 ): Promise<AdminGetUserResponse> => {
   try {
     const command = new AdminGetUserCommand(input);

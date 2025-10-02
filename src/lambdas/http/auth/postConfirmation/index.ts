@@ -4,6 +4,10 @@ import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
 import { InvalidRequestBody, ResourceNotFound } from "../../../../utils/errors";
 import { cognitoAdminGetUser } from "../../../../services/cognito";
+import {
+  EnvVariables,
+  fetchEnvVariableOrThrow,
+} from "../../../../utils/envVariables";
 
 const handler = async (
   event: APIGatewayProxyEvent
@@ -11,8 +15,17 @@ const handler = async (
   try {
     const body = await schemaValidation(event, requestBodySchema);
 
-    const cognitoUser = await cognitoAdminGetUser(body.userId);
+    const cognitoUser = await cognitoAdminGetUser({
+      UserPoolId: fetchEnvVariableOrThrow(EnvVariables.USER_POOL_ID),
+      Username: body.email,
+    });
 
+    const userVerified = cognitoUser.UserAttributes?.find(
+      (obj) => obj.Name === "email_verified"
+    );
+
+    if (userVerified?.Value === "true") {
+    }
     // send confirmation
 
     // Handle DynamoDB payload
@@ -21,6 +34,7 @@ const handler = async (
 
     return generateApiGatewayResponse({ statusCode: 200 });
   } catch (err: unknown) {
+    console.log(err);
     if (err instanceof InvalidRequestBody) {
       return generateApiGatewayResponse({
         statusCode: 400,

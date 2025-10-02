@@ -3,11 +3,7 @@ import {
   ConfirmSignUpResponse,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { cognitoIdentityClient } from "..";
-import {
-  InternalServerError,
-  ResourceNotFound,
-  TooManyRequests,
-} from "../../../utils/errors";
+import { InternalServerError, TooManyRequests } from "../../../utils/errors";
 
 export const cognitoConfirmSignup = async (
   input: any

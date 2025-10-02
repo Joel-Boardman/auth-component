@@ -38,8 +38,6 @@ const handler = async (
       const res = await cognitoConfirmSignup({});
     }
 
-    // send confirmation
-
     // Handle DynamoDB payload
 
     // Send via Dynamo SDK

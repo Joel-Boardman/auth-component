@@ -183,4 +183,10 @@ describe("PostConfirmation", () => {
       });
     });
   });
+
+  describe("WHEN DynamoDB is called to store the user", () => {
+    describe("AND it throws a standard error", () => {
+      it.todo("SHOULD throw an InternalServerError error");
+    });
+  });
 });

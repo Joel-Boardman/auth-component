@@ -111,9 +111,21 @@ describe("PostConfirmation", () => {
     });
   });
 
-  describe("WHEN Cognito is called to verify Users email", () => {
-    describe("AND it throws a TooManyFailedAttemptsException error", () => {
-      it.todo("SHOULD throw a 410 error with proper error message");
+  describe("WHEN the user is not verified", () => {
+    describe("WHEN Cognito is called to verify the email", () => {
+      describe("AND a standard error is thrown", () => {
+        it.todo("SHOULD throw an InternalServerError error");
+      });
+
+      describe("AND it throws a TooManyFailedAttemptsException error", () => {
+        it.todo("SHOULD throw a TooManyRequests error with no RetryAfter");
+      });
+
+      describe("AND it throws a LimitExceededException OR TooManyRequestsException error", () => {
+        it.todo(
+          "SHOULD throw a TooManyRequests error with a 10 second RetryAfter"
+        );
+      });
     });
   });
 });

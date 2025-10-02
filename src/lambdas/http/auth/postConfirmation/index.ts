@@ -31,7 +31,7 @@ const handler = async (
       (obj) => obj.Name === "email_verified"
     );
 
-    if (userVerified?.Value === "true") {
+    if (userVerified?.Value === "false") {
     }
 
     // send confirmation

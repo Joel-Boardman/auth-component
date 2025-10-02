@@ -5,7 +5,11 @@ import {
   CognitoIdentityProviderClient,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { cognitoAdminGetUser } from ".";
-import { InternalServerError, ResourceNotFound } from "../../../utils/errors";
+import {
+  InternalServerError,
+  ResourceNotFound,
+  TooManyRequests,
+} from "../../../utils/errors";
 
 const cognitoClientMock = mockClient(CognitoIdentityProviderClient);
 
@@ -25,6 +29,19 @@ describe("AdminGetUser", () => {
 
         await expect(cognitoAdminGetUser(input)).rejects.toThrow(
           ResourceNotFound
+        );
+      });
+    });
+
+    describe("AND its a TooManyFailedAttemptsException", () => {
+      it("SHOULD throw a ResourceNotFound error", async () => {
+        cognitoClientMock.on(AdminGetUserCommand).rejects({
+          name: "TooManyFailedAttemptsException",
+          message: "Too many attempts",
+        });
+
+        await expect(cognitoAdminGetUser(input)).rejects.toThrow(
+          TooManyRequests
         );
       });
     });

@@ -2,7 +2,11 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import generateApiGatewayResponse from "../../../../utils/response";
 import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
-import { InvalidRequestBody, ResourceNotFound } from "../../../../utils/errors";
+import {
+  InvalidRequestBody,
+  ResourceNotFound,
+  TooManyRequests,
+} from "../../../../utils/errors";
 import { cognitoAdminGetUser } from "../../../../services/cognito";
 import {
   EnvVariables,
@@ -29,6 +33,7 @@ const handler = async (
 
     if (userVerified?.Value === "true") {
     }
+
     // send confirmation
 
     // Handle DynamoDB payload
@@ -50,6 +55,15 @@ const handler = async (
     if (err instanceof ResourceNotFound) {
       return generateApiGatewayResponse({
         statusCode: 404,
+        body: {
+          message: err.message,
+        },
+      });
+    }
+
+    if (err instanceof TooManyRequests) {
+      return generateApiGatewayResponse({
+        statusCode: 429,
         body: {
           message: err.message,
         },

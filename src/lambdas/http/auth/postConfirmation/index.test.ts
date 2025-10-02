@@ -153,9 +153,33 @@ describe("PostConfirmation", () => {
       });
 
       describe("AND it throws a LimitExceededException OR TooManyRequestsException error", () => {
-        it.todo(
-          "SHOULD throw a TooManyRequests error with a 10 second RetryAfter"
-        );
+        it("SHOULD throw a TooManyRequests error with a 10 second RetryAfter", async () => {
+          mockCognitoAdminGetUser.mockResolvedValue({
+            Username: "test-user",
+            UserAttributes: [{ Name: "email_verified", Value: "false" }],
+          });
+          mockCognitoConfirmSignup.mockRejectedValue(
+            new TooManyRequests(
+              "Too many requests. Please try again later.",
+              10
+            )
+          );
+
+          const event = generateApiGatewayEvent(
+            "POST",
+            "/post-confirmation",
+            validBody
+          );
+
+          const res = await postConfirmation(event);
+          expect(res.statusCode).toBe(429);
+          expect(res.body).toBe(
+            JSON.stringify({
+              message: "Too many requests. Please try again later.",
+              retryAfter: 10,
+            })
+          );
+        });
       });
     });
   });

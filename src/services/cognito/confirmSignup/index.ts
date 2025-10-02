@@ -31,6 +31,13 @@ export const cognitoConfirmSignup = async (
           "Too many verification code requests. Please try again later."
         );
       }
+      case "LimitExceededException":
+      case "TooManyRequestsException": {
+        throw new TooManyRequests(
+          "Too many requests. Please try again later.",
+          10
+        );
+      }
       default: {
         throw new InternalServerError("Unable to get User");
       }

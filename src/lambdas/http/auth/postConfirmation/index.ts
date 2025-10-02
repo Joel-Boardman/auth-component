@@ -72,6 +72,7 @@ const handler = async (
         statusCode: 429,
         body: {
           message: err.message,
+          ...(err.retryAfter ? { retryAfter: err.retryAfter } : {}),
         },
       });
     }

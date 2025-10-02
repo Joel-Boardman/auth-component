@@ -31,11 +31,13 @@ export class InvalidRequestBody extends Error {
 export class TooManyRequests extends Error {
   statusCode: number;
   errorCode: ErrorCodes;
+  retryAfter?: number;
 
-  constructor(message: string) {
+  constructor(message: string, retryAfter?: number) {
     super(message);
     this.statusCode = 429;
     this.errorCode = ErrorCodes.TooManyRequests;
+    this.retryAfter = retryAfter || 0;
   }
 }
 

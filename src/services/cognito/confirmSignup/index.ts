@@ -1,6 +1,6 @@
 import {
-  AdminGetUserCommand,
-  AdminGetUserResponse,
+  ConfirmSignUpCommand,
+  ConfirmSignUpResponse,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { cognitoIdentityClient } from "..";
 import {
@@ -8,13 +8,12 @@ import {
   ResourceNotFound,
   TooManyRequests,
 } from "../../../utils/errors";
-import { CognitoAdminGetUserParams } from "./index.types";
 
-export const cognitoAdminGetUser = async (
-  input: CognitoAdminGetUserParams
-): Promise<AdminGetUserResponse> => {
+export const cognitoConfirmSignup = async (
+  input: any
+): Promise<ConfirmSignUpResponse> => {
   try {
-    const command = new AdminGetUserCommand(input);
+    const command = new ConfirmSignUpCommand(input);
     const response = await cognitoIdentityClient.send(command);
 
     return response;
@@ -27,12 +26,16 @@ export const cognitoAdminGetUser = async (
     });
 
     switch (err.name) {
-      case "UserNotFoundException": {
-        throw new ResourceNotFound("User not found");
-      }
       case "TooManyFailedAttemptsException": {
         throw new TooManyRequests(
           "Too many verification code requests. Please try again later."
+        );
+      }
+      case "LimitExceededException":
+      case "TooManyRequestsException": {
+        throw new TooManyRequests(
+          "Too many requests. Please try again later.",
+          10
         );
       }
       default: {

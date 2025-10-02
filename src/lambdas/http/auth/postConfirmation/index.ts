@@ -2,12 +2,20 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import generateApiGatewayResponse from "../../../../utils/response";
 import { schemaValidation } from "../../../../utils/validation";
 import { requestBodySchema } from "./index.schema";
-import { InvalidRequestBody, ResourceNotFound } from "../../../../utils/errors";
-import { cognitoAdminGetUser } from "../../../../services/cognito";
+import {
+  InvalidRequestBody,
+  ResourceNotFound,
+  TooManyRequests,
+} from "../../../../utils/errors";
+import {
+  cognitoAdminGetUser,
+  cognitoConfirmSignup,
+} from "../../../../services/cognito";
 import {
   EnvVariables,
   fetchEnvVariableOrThrow,
 } from "../../../../utils/envVariables";
+import { CognitoAdminGetUserInput } from "../../../../services/cognito/adminGetUser/index.types";
 
 const handler = async (
   event: APIGatewayProxyEvent
@@ -15,17 +23,21 @@ const handler = async (
   try {
     const body = await schemaValidation(event, requestBodySchema);
 
-    const cognitoUser = await cognitoAdminGetUser({
+    const input: CognitoAdminGetUserInput = {
       UserPoolId: fetchEnvVariableOrThrow(EnvVariables.USER_POOL_ID),
       Username: body.email,
-    });
+    };
+
+    const cognitoUser = await cognitoAdminGetUser(input);
 
     const userVerified = cognitoUser.UserAttributes?.find(
       (obj) => obj.Name === "email_verified"
     );
 
-    if (userVerified?.Value === "true") {
+    if (userVerified?.Value === "false") {
+      const res = await cognitoConfirmSignup({});
     }
+
     // send confirmation
 
     // Handle DynamoDB payload
@@ -34,7 +46,6 @@ const handler = async (
 
     return generateApiGatewayResponse({ statusCode: 200 });
   } catch (err: unknown) {
-    console.log(err);
     if (err instanceof InvalidRequestBody) {
       return generateApiGatewayResponse({
         statusCode: 400,
@@ -49,6 +60,16 @@ const handler = async (
         statusCode: 404,
         body: {
           message: err.message,
+        },
+      });
+    }
+
+    if (err instanceof TooManyRequests) {
+      return generateApiGatewayResponse({
+        statusCode: 429,
+        body: {
+          message: err.message,
+          ...(err.retryAfter ? { retryAfter: err.retryAfter } : {}),
         },
       });
     }

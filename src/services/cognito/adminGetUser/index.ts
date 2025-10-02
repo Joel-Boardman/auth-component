@@ -26,7 +26,7 @@ export const cognitoAdminGetUser = async (
         throw new ResourceNotFound("User not found");
       }
       default: {
-        throw new InternalServerError("Unable to create new User");
+        throw new InternalServerError("Unable to get User");
       }
     }
   }

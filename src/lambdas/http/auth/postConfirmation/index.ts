@@ -25,7 +25,6 @@ const handler = async (
     );
 
     if (userVerified?.Value === "true") {
-      
     }
     // send confirmation
 
@@ -35,6 +34,7 @@ const handler = async (
 
     return generateApiGatewayResponse({ statusCode: 200 });
   } catch (err: unknown) {
+    console.log(err);
     if (err instanceof InvalidRequestBody) {
       return generateApiGatewayResponse({
         statusCode: 400,

@@ -9,8 +9,14 @@ import {
 jest.mock("../../../../services/cognito");
 
 const mockCognitoAdminGetUser = cognitoAdminGetUser as jest.Mock;
+const mockCognitoConfirmSignup = cognitoAdminGetUser as jest.Mock;
 
 describe("PostConfirmation", () => {
+  beforeEach(() => {
+    process.env = {
+      USER_POOL_ID: "user-pool-id",
+    };
+  });
   afterEach(() => jest.clearAllMocks());
 
   describe("WHEN the Request payload is invalid", () => {
@@ -40,6 +46,7 @@ describe("PostConfirmation", () => {
         const event = generateApiGatewayEvent("POST", "/post-confirmation", {
           body: {
             userId: "aaaaa-bbbbb-ccccc-ddddd-eeeee-ffffff",
+            email: "test@email.com",
           },
         });
 
@@ -61,6 +68,7 @@ describe("PostConfirmation", () => {
         const event = generateApiGatewayEvent("POST", "/post-confirmation", {
           body: {
             userId: "aaaaa-bbbbb-ccccc-ddddd-eeeee-ffffff",
+            email: "test@email.com",
           },
         });
 
@@ -74,7 +82,24 @@ describe("PostConfirmation", () => {
 
   describe("WHEN Cognito is called to verify Users email", () => {
     describe("AND it throws a standard error", () => {
-      it.todo("SHOULD return 500 Internal server error");
+      it("SHOULD return 500 Internal server error", async () => {
+        mockCognitoConfirmSignup.mockRejectedValue(
+          new InternalServerError("Unable to get User")
+        );
+
+        const event = generateApiGatewayEvent("POST", "/post-confirmation", {
+          body: {
+            userId: "aaaaa-bbbbb-ccccc-ddddd-eeeee-ffffff",
+          },
+        });
+
+        const res = await postConfirmation(event);
+
+        expect(res.statusCode).toBe(500);
+        expect(res.body).toBe(
+          JSON.stringify({ message: "Internal server error" })
+        );
+      });
     });
 
     describe("AND it throws a TooManyFailedAttemptsException error", () => {

@@ -1,6 +1,9 @@
 import generateApiGatewayEvent from "../../../../../testing-tools/generateApiGatewayEvent";
 import postConfirmation from "./";
-import { cognitoAdminGetUser } from "../../../../services/cognito";
+import {
+  cognitoAdminGetUser,
+  cognitoConfirmSignup,
+} from "../../../../services/cognito";
 import {
   InternalServerError,
   ResourceNotFound,
@@ -10,7 +13,7 @@ import {
 jest.mock("../../../../services/cognito");
 
 const mockCognitoAdminGetUser = cognitoAdminGetUser as jest.Mock;
-const mockCognitoConfirmSignup = cognitoAdminGetUser as jest.Mock;
+const mockCognitoConfirmSignup = cognitoConfirmSignup as jest.Mock;
 
 describe("PostConfirmation", () => {
   beforeEach(() => {
@@ -90,35 +93,63 @@ describe("PostConfirmation", () => {
         expect(res.body).toBe(JSON.stringify({ message: "User not found" }));
       });
     });
-
-    describe("AND it throws a TooManyFailedAttemptsException error", () => {
-      it("SHOULD return 429 TooManyRequests error", async () => {
-        mockCognitoConfirmSignup.mockRejectedValue(
-          new TooManyRequests("Too many requests")
-        );
-
-        const event = generateApiGatewayEvent(
-          "POST",
-          "/post-confirmation",
-          validBody
-        );
-
-        const res = await postConfirmation(event);
-
-        expect(res.statusCode).toBe(429);
-        expect(res.body).toBe(JSON.stringify({ message: "Too many requests" }));
-      });
-    });
   });
 
   describe("WHEN the user is not verified", () => {
     describe("WHEN Cognito is called to verify the email", () => {
       describe("AND a standard error is thrown", () => {
-        it.todo("SHOULD throw an InternalServerError error");
+        it("SHOULD throw an InternalServerError error", async () => {
+          mockCognitoConfirmSignup.mockRejectedValue(
+            new InternalServerError("Internal server error")
+          );
+          mockCognitoAdminGetUser.mockResolvedValue({
+            Username: "test-user",
+            UserAttributes: [{ Name: "email_verified", Value: "false" }],
+          });
+
+          const event = generateApiGatewayEvent(
+            "POST",
+            "/post-confirmation",
+            validBody
+          );
+
+          const res = await postConfirmation(event);
+
+          expect(res.statusCode).toBe(500);
+          expect(res.body).toBe(
+            JSON.stringify({ message: "Internal server error" })
+          );
+        });
       });
 
       describe("AND it throws a TooManyFailedAttemptsException error", () => {
-        it.todo("SHOULD throw a TooManyRequests error with no RetryAfter");
+        it("SHOULD throw a TooManyRequests error with no RetryAfter", async () => {
+          mockCognitoAdminGetUser.mockResolvedValue({
+            Username: "test-user",
+            UserAttributes: [{ Name: "email_verified", Value: "false" }],
+          });
+          mockCognitoConfirmSignup.mockRejectedValue(
+            new TooManyRequests(
+              "Too many verification code requests. Please try again later."
+            )
+          );
+
+          const event = generateApiGatewayEvent(
+            "POST",
+            "/post-confirmation",
+            validBody
+          );
+
+          const res = await postConfirmation(event);
+
+          expect(res.statusCode).toBe(429);
+          expect(res.body).toBe(
+            JSON.stringify({
+              message:
+                "Too many verification code requests. Please try again later.",
+            })
+          );
+        });
       });
 
       describe("AND it throws a LimitExceededException OR TooManyRequestsException error", () => {

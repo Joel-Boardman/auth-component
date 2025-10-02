@@ -7,7 +7,10 @@ import {
   ResourceNotFound,
   TooManyRequests,
 } from "../../../../utils/errors";
-import { cognitoAdminGetUser } from "../../../../services/cognito";
+import {
+  cognitoAdminGetUser,
+  cognitoConfirmSignup,
+} from "../../../../services/cognito";
 import {
   EnvVariables,
   fetchEnvVariableOrThrow,
@@ -27,11 +30,14 @@ const handler = async (
 
     const cognitoUser = await cognitoAdminGetUser(input);
 
+    console.log("HOLA", cognitoUser);
+
     const userVerified = cognitoUser.UserAttributes?.find(
       (obj) => obj.Name === "email_verified"
     );
 
     if (userVerified?.Value === "false") {
+      const res = await cognitoConfirmSignup({});
     }
 
     // send confirmation
